@@ -6,11 +6,22 @@
 static int cookies = 0; // Global variable to store the number of cookies
 static GtkWidget *lab;   // Global label variable
 
-static int cps = 1; // Store the number of cookies per second
+static int cps = 111; // Store the number of cookies per second
 static int cpc = 3; // Store the number of cookies per click
 
 static int cpc_cost = 10; // Global variable to store the cost of the next upgrade
 static int cps_cost = 100; // Global variable to store the cost of the next upgrade
+
+static gboolean update_cps_callback(gpointer user_data) {
+    // Increment the number of cookies per second
+    cookies += cps;
+
+    // Update the label text
+    gtk_label_set_text(GTK_LABEL(lab), g_strdup_printf("Number Of Cookies: %d", cookies));
+
+    // Returning TRUE ensures the timer continues to run
+    return TRUE;
+}
 
 static void upgrade_cps(GtkWidget *widget, gpointer data) {
 
@@ -60,6 +71,9 @@ static void app_activate(GApplication *app) {
     GtkWidget *box;
     GtkWidget *btnCps;
     GtkWidget *btnCpc;
+
+    // Create a timer to update the CPS
+    g_timeout_add_seconds(1, update_cps_callback, NULL);
 
     // Rendering the window
     win = gtk_application_window_new(GTK_APPLICATION(app));
