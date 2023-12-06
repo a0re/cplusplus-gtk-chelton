@@ -27,12 +27,13 @@ static void upgrade_cps(GtkWidget *widget, gpointer data) {
 
     // Check if the player has enough cookies to buy the upgrade
     if (cookies >= cps_cost) {
+        g_print("Upgrade CPS: %d. Cost: %d, Cookies: %d\n", cps, cps_cost, cookies);
         // Subtract the cost of the upgrade from the number of cookies
         cookies -= cps_cost;
         // Increment the number of cookies per second
         cps++;
         // Increment the cost of the next upgrade
-        cps_cost += 100;
+        cps_cost += 10;
         // Update the label text
         gtk_label_set_text(GTK_LABEL(lab), g_strdup_printf("Number Of Cookies: %d", cookies));
     }
