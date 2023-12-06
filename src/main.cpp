@@ -2,19 +2,21 @@
 #include <gtk/gtk.h>
 /* TODO: Have something that works with Cookies / Per Second with Chrono or Normal Timer */
 
+/* TODO: Max: The Program at the very moment has every object in main.cpp | This needs to be changed and has be to Object Oriented*/
 
 static int cookies = 0; // Global variable to store the number of cookies
 static GtkWidget *lab;   // Global label variable
 
-static int cps = 111; // Store the number of cookies per second
-static int cpc = 3; // Store the number of cookies per click
+static int cps = 1; // Store the number of cookies per second
+static int cpc = 1; // Store the number of cookies per click
 
 static int cpc_cost = 10; // Global variable to store the cost of the next upgrade
-static int cps_cost = 100; // Global variable to store the cost of the next upgrade
+static int cps_cost = 10; // Global variable to store the cost of the next upgrade
 
+// Function to update the number of cookies per second
 static gboolean update_cps_callback(gpointer user_data) {
     // Increment the number of cookies per second
-    cookies += cps;
+    cookies += cps * 1; // Multiply by the number of seconds
 
     // Update the label text
     gtk_label_set_text(GTK_LABEL(lab), g_strdup_printf("Number Of Cookies: %d", cookies));
@@ -26,8 +28,11 @@ static gboolean update_cps_callback(gpointer user_data) {
 static void upgrade_cps(GtkWidget *widget, gpointer data) {
 
     // Check if the player has enough cookies to buy the upgrade
-    if (cookies >= cps_cost) {
-        g_print("Upgrade CPS: %d. Cost: %d, Cookies: %d\n", cps, cps_cost, cookies);
+    if (cps_cost >= cookies) {
+        g_print("You don't have enough cookies. Upgrade CPS: %d. Cost: %d, Cookies: %d\n", cps, cps_cost, cookies);
+
+    }
+    else {
         // Subtract the cost of the upgrade from the number of cookies
         cookies -= cps_cost;
         // Increment the number of cookies per second
