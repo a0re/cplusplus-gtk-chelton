@@ -4,6 +4,7 @@
 
 /* TODO: Max: The Program at the very moment has every object in main.cpp | This needs to be changed and has be to Object Oriented*/
 
+
 static int cookies = 0; // Global variable to store the number of cookies
 static GtkWidget *lab;   // Global label variable
 
@@ -127,7 +128,9 @@ int main(int argc, char *argv[]) {
     return stat;
 }
 
+// Left this here tho obsolete af, refer to MyWindow.h for int main() function
 /*auto app = Gtk::Application::create("org.gtkmm.example");
 
 //Shows the window and returns when it is closed.
 return app->make_window_and_run<HelloWorld>(argc, argv);*/
+

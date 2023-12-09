@@ -25,7 +25,7 @@ file(GLOB_RECURSE SOURCES
 add_executable(Chelton ${SOURCES}
         src/Socket.cpp
         src/Socket.h
-        src/Upgrade.cpp
-        src/Upgrade.h)
+        MyWindow.cpp
+        MyWindow.h)
 
 target_link_libraries(Chelton ${GTKMM_LIBRARIES})
