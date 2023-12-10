@@ -1,7 +1,9 @@
 #pragma once
 // gtkmm - a C++ wrapper for the Gtk toolkit
 #include <gtkmm.h>
+#include <gtkmm/application.h>
 #include <iostream>
+#include <chrono>
 
 class MyWindow : public Gtk::Window
 {
@@ -9,7 +11,6 @@ public:
     // Game Window Rendering
     MyWindow();
     // [ TODO: Socket Connect Window ]
-
 protected:
     //Variables:
         // Stores Count Values
@@ -19,6 +20,7 @@ protected:
     int m_cpc_cost_count;
     int m_cps_lvl_count;
     int m_cps_cost_count;
+    int intervalMilliseconds = 1000;
 
     // Signal Handlers:
         // Writes to screen when button (Gtk::Button (variable)) is pressed
@@ -28,6 +30,7 @@ protected:
     void on_cookie_button_clicked();
     void on_cpc_button_clicked();
     void on_cps_button_clicked();
+    bool update_cps_callback();
 
         // Updates view
     void update_label_1();
@@ -47,6 +50,9 @@ protected:
                m_label_4,
                m_label_5,
                m_label_6;
+
+    // Label*
+    Gtk::Label* m_label_7;
 
     // Buttons:
     Gtk::Button m_button_1,

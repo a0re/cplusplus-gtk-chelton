@@ -18,6 +18,7 @@ MyWindow::MyWindow()
   m_label_6("Cost: 0"),
   m_cps_cost_count(0)
 {
+
     // Window Title
     set_title("Game: Cookie Clicker");
 
@@ -56,6 +57,9 @@ MyWindow::MyWindow()
     m_button_3.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_cps_button_clicked));
     m_button_3.signal_clicked().connect(sigc::bind( sigc::mem_fun(*this, &MyWindow::on_button_numbered), "Upgrade CPS") );
 
+    // Calls to Function every Second [ Gtkmm Library Signal ]
+    //  https://gnome.pages.gitlab.gnome.org/glibmm/classGlib_1_1SignalTimeout.html#a26c6d456b606758e819d3db69ae17d56
+    Glib::signal_timeout().connect(sigc::mem_fun(*this, &MyWindow::update_cps_callback), intervalMilliseconds);
 }
 
 // Prints to console: 'Button was pressed'
@@ -65,35 +69,54 @@ void MyWindow::on_button_numbered(const Glib::ustring& data)
     std::cout << data << " was pressed" << std::endl;
 }
 
-// Quick implementation of needed Function
-// [ Will be removed as this is not OOP 'file wise' ]
+// [ Functions are in this file for testing currently ]
+// [ TODO: Move Functions to other files ]
+    // Increments Cookies
 void MyWindow::on_cookie_button_clicked() {
-    m_cookie_count++;
-        // [ Will not update the label without ]
+    // Increments Cookies by CPC LVL
+    m_cookie_count += m_cpc_lvl_count;
     update_label_1();
 }
 
-// Quick implementation of needed Function
-// [ Will be removed as this is not OOP 'file wise' ]
+// Purchase System for CPC
 void MyWindow::on_cpc_button_clicked() {
-    m_cpc_lvl_count++;
-    m_cpc_cost_count++;
-    // [ Will not update the label without ]
-    update_label_3();
-    update_label_4();
+    // Authenticates Transaction
+    if (m_cpc_cost_count > m_cookie_count) {
+        // [ TODO: Error Handling ]
+    } else {
+        // Subtracts Cookies based upon CPC Cost
+        m_cookie_count -= m_cpc_cost_count;
+        // Increments CPC LVL
+        m_cpc_lvl_count++;
+        // Increments Cost Total by [ 20 ]
+        m_cpc_cost_count += 20;
+        update_label_1();
+        update_label_3();
+        update_label_4();
+    }
 }
 
-// Quick implementation of needed Function
-// [ Will be removed as this is not OOP 'file wise' ]
+// Purchase System for CPS
 void MyWindow::on_cps_button_clicked() {
-    m_cps_count++;
-    m_cps_lvl_count++;
-    m_cps_cost_count++;
-    // [ Will not update the label without ]
-    update_label_2();
-    update_label_5();
-    update_label_6();
+    // Authenticates Transaction
+    if (m_cps_cost_count >= m_cookie_count) {
+        // [ TODO: Error Handling ]
+    } else {
+        // Subtracts Cookies based upon CPS Cost
+        m_cookie_count -= m_cps_cost_count;
+        // Increments CPS LVL
+        m_cps_lvl_count++;
+        // Increments CPS Count
+        m_cps_count++;
+        // Increments Cost Total by [ 50 ]
+        m_cps_cost_count += 50;
+        update_label_1();
+        update_label_2();
+        update_label_5();
+        update_label_6();
+    }
 }
+
 // Updates the View each time corresponding function is called to
  // [ TODO: Verification ]
 void MyWindow::update_label_1() {
@@ -114,6 +137,27 @@ void MyWindow::update_label_5() {
 void MyWindow::update_label_6() {
     m_label_6.set_text("Cost: " + std::to_string(m_cps_cost_count));
 }
+
+// Increments Cookie Total automatically by the CPS
+bool MyWindow::update_cps_callback() {
+    // Use std::chrono to calculate the time elapsed since the last update
+    static auto last_time = std::chrono::high_resolution_clock::now();
+    auto current_time = std::chrono::high_resolution_clock::now();
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - last_time).count();
+
+    // Increment the number of cookies per second based on elapsed time
+    m_cookie_count += m_cps_count * elapsed_time;
+
+    // Update the label text
+    update_label_1();
+
+    // Update the last_time variable for the next iteration
+    last_time = current_time;
+
+    // Returning true ensures the timer continues to run
+    return true;
+}
+
 
 // the following is the code needed to run the Window
 /*
