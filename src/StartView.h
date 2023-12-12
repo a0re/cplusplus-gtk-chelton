@@ -1,5 +1,7 @@
 #pragma once
 #include <gtkmm.h>
+#include "Server.h"
+#include "Client.h"
 
 /*#include <gtkmm/application.h> || I don't need this at the moment*/
 
@@ -16,4 +18,5 @@ protected:
 
     void onServerButtonClicked();
     void onClientButtonClicked();
+
 };
