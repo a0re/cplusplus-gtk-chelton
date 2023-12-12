@@ -1,19 +1,21 @@
 #pragma once
 // gtkmm - a C++ wrapper for the Gtk toolkit
-#include <gtkmm.h>
-#include <gtkmm/application.h>
+#include <gtkmm.h> //
+#include <gtkmm/application.h> // Gtk::Application assist in running the program in main.cpp
 #include <iostream>
 #include <chrono>
 
-class MyWindow : public Gtk::Window
+
+class CookieClicker : public Gtk::Window
 {
 public:
     // Game Window Rendering
-    MyWindow();
+    CookieClicker();
+
     // [ TODO: Socket Connect Window ]
 protected:
     //Variables:
-        // Stores Count Values
+    // Stores Count Values
     int m_cookie_count;
     int m_cps_count;
     int m_cpc_lvl_count;

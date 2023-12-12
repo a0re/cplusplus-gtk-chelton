@@ -1,15 +1,29 @@
 #pragma once
+#include <gtkmm.h>
 
-class Server {
+class Server : public Gtk::Window {
 public:
     Server();   // Constructor for the Server class
-    ~Server();  // Destructor for the Server class
+    virtual ~Server();  // Destructor for the Server class
 
-    void startServer();          // Method to start the server
-    void acceptConnections();    // Method to accept incoming connections
+protected:
+    void startGame();
+    void listenForConnection();
+    void handleClientConnection(int clientSocket);
 
-    int getClientSocket() const;  // Method to retrieve clientSocket
-private:
+
+    Gtk::Grid m_grid;
+    // Show Connection Details
+    Gtk::Label lblConnection, lblIP, lblPort, lblStatus;
+
+    // Show Connected Clients
+    Gtk::Label lblClient;
+    Gtk::Button btnBack;
+
     int serverSocket;  // Socket descriptor for the server
-    int clientSocket;  // Socket descriptor for the connected client
+
+    std::vector<int> connectedClients; // Vector to store connected clients
 };
+
+
+

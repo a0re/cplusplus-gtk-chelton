@@ -1,7 +1,8 @@
-#include "MyWindow.h"
+#include "CookieClicker.h"
+
 
 // Window Rendering
-MyWindow::MyWindow()
+CookieClicker::CookieClicker()
 : m_label_1("Cookies: 0"),
   m_cookie_count(0),
   m_label_2("CPS: 0"),
@@ -26,8 +27,8 @@ MyWindow::MyWindow()
     set_default_size(550, 450);
 
     //Layout Formatting
-        // [ TODO: Better Layout, refer to documents ]
-    m_grid.set_margin(12);
+    // [ TODO: Better Layout, refer to documents ]
+    m_grid.set_margin(20);
 
     // Places Grid within Window Frame
     // [ Buttons and Labels will not show without this ]
@@ -48,23 +49,23 @@ MyWindow::MyWindow()
 
     // Connects Signal handler to the 'clicked' signal of Buttons ( m_button_(int))
     // [ when Buttons are clicked allocated functions (on_button_numbered()) are triggered ]
-    m_button_1.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_cookie_button_clicked));
-    m_button_1.signal_clicked().connect(sigc::bind( sigc::mem_fun(*this, &MyWindow::on_button_numbered), "Cookie") );
+    m_button_1.signal_clicked().connect(sigc::mem_fun(*this, &CookieClicker::on_cookie_button_clicked));
+    m_button_1.signal_clicked().connect(sigc::bind( sigc::mem_fun(*this, &CookieClicker::on_button_numbered), "Cookie") );
 
-    m_button_2.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_cpc_button_clicked));
-    m_button_2.signal_clicked().connect(sigc::bind( sigc::mem_fun(*this, &MyWindow::on_button_numbered), "Upgrade CPC") );
+    m_button_2.signal_clicked().connect(sigc::mem_fun(*this, &CookieClicker::on_cpc_button_clicked));
+    m_button_2.signal_clicked().connect(sigc::bind( sigc::mem_fun(*this, &CookieClicker::on_button_numbered), "Upgrade CPC") );
 
-    m_button_3.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_cps_button_clicked));
-    m_button_3.signal_clicked().connect(sigc::bind( sigc::mem_fun(*this, &MyWindow::on_button_numbered), "Upgrade CPS") );
+    m_button_3.signal_clicked().connect(sigc::mem_fun(*this, &CookieClicker::on_cps_button_clicked));
+    m_button_3.signal_clicked().connect(sigc::bind( sigc::mem_fun(*this, &CookieClicker::on_button_numbered), "Upgrade CPS") );
 
     // Calls to Function every Second [ Gtkmm Library Signal ]
     //  https://gnome.pages.gitlab.gnome.org/glibmm/classGlib_1_1SignalTimeout.html#a26c6d456b606758e819d3db69ae17d56
-    Glib::signal_timeout().connect(sigc::mem_fun(*this, &MyWindow::update_cps_callback), intervalMilliseconds);
+    Glib::signal_timeout().connect(sigc::mem_fun(*this, &CookieClicker::update_cps_callback), intervalMilliseconds);
 }
 
 // Prints to console: 'Button was pressed'
  // [ For testing purposes only. Verifies Buttons are being called to functions ]
-void MyWindow::on_button_numbered(const Glib::ustring& data)
+void CookieClicker::on_button_numbered(const Glib::ustring& data)
 {
     std::cout << data << " was pressed" << std::endl;
 }
@@ -72,14 +73,14 @@ void MyWindow::on_button_numbered(const Glib::ustring& data)
 // [ Functions are in this file for testing currently ]
 // [ TODO: Move Functions to other files ]
     // Increments Cookies
-void MyWindow::on_cookie_button_clicked() {
+void CookieClicker::on_cookie_button_clicked() {
     // Increments Cookies by CPC LVL
     m_cookie_count += m_cpc_lvl_count;
     update_label_1();
 }
 
 // Purchase System for CPC
-void MyWindow::on_cpc_button_clicked() {
+void CookieClicker::on_cpc_button_clicked() {
     // Authenticates Transaction
     if (m_cpc_cost_count > m_cookie_count) {
         // [ TODO: Error Handling ]
@@ -97,7 +98,7 @@ void MyWindow::on_cpc_button_clicked() {
 }
 
 // Purchase System for CPS
-void MyWindow::on_cps_button_clicked() {
+void CookieClicker::on_cps_button_clicked() {
     // Authenticates Transaction
     if (m_cps_cost_count >= m_cookie_count) {
         // [ TODO: Error Handling ]
@@ -119,27 +120,27 @@ void MyWindow::on_cps_button_clicked() {
 
 // Updates the View each time corresponding function is called to
  // [ TODO: Verification ]
-void MyWindow::update_label_1() {
+void CookieClicker::update_label_1() {
     m_label_1.set_text("Cookies: " + std::to_string(m_cookie_count));
 }
-void MyWindow::update_label_2() {
+void CookieClicker::update_label_2() {
     m_label_2.set_text("CPS: " + std::to_string(m_cps_count));
 }
-void MyWindow::update_label_3() {
+void CookieClicker::update_label_3() {
     m_label_3.set_text("LVL: " + std::to_string(m_cpc_lvl_count));
 }
-void MyWindow::update_label_4() {
+void CookieClicker::update_label_4() {
     m_label_4.set_text("Cost: " + std::to_string(m_cpc_cost_count));
 }
-void MyWindow::update_label_5() {
+void CookieClicker::update_label_5() {
     m_label_5.set_text("LVL: " + std::to_string(m_cps_lvl_count));
 }
-void MyWindow::update_label_6() {
+void CookieClicker::update_label_6() {
     m_label_6.set_text("Cost: " + std::to_string(m_cps_cost_count));
 }
 
 // Increments Cookie Total automatically by the CPS
-bool MyWindow::update_cps_callback() {
+bool CookieClicker::update_cps_callback() {
     // Use std::chrono to calculate the time elapsed since the last update
     static auto last_time = std::chrono::high_resolution_clock::now();
     auto current_time = std::chrono::high_resolution_clock::now();
@@ -159,12 +160,3 @@ bool MyWindow::update_cps_callback() {
 }
 
 
-// the following is the code needed to run the Window
-/*
-int main(int argc, char *argv[])
-{
-    auto app = Gtk::Application::create("org.gtkmm.examples.base");
-
-    return app->make_window_and_run<MyWindow>(argc, argv);
-};
- */

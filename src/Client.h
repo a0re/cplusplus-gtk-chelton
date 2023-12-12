@@ -1,12 +1,25 @@
 #pragma once
+#include <gtkmm.h>
 
-class Client {
+class Client : public Gtk::Window {
 public:
-    Client();    // Constructor for the Client class
-    ~Client();   // Destructor for the Client class
+    Client();
+    virtual ~Client();
 
-    void connectToServer(const char* serverIP, int serverPort);  // Method to connect to the server
+protected:
+    void ConnectToServer();
+    void loadGame();
 
-private:
-    int clientSocket;  // Socket descriptor for the client
+    Gtk::Grid m_grid;
+
+    // Label & Entry fields for IP and Port
+    Gtk::Label lblIP, lblPort;
+    Gtk::Entry txtIP, txtPort;
+
+    Gtk::Label lblStatus;
+
+    Gtk::Button btnConnect, btnBack;
+
+    int clientSocket;
+
 };
