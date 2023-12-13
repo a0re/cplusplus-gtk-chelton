@@ -1,5 +1,11 @@
 #pragma once
 #include <gtkmm.h>
+#include <cstring>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
 
 class Server : public Gtk::Window {
 public:
@@ -7,23 +13,19 @@ public:
     virtual ~Server();  // Destructor for the Server class
 
 protected:
-    void startGame();
-    void listenForConnection();
-    void handleClientConnection(int clientSocket);
+    int serverSocket;
+    std::string ipAddress;
+
+    void startServer();
+    void onBackButtonClicked();
 
 
+
+    /* Layout of Window */
     Gtk::Grid m_grid;
-    // Show Connection Details
-    Gtk::Label lblConnection, lblIP, lblPort, lblStatus;
-
-    // Show Connected Clients
+    Gtk::Label lblConnection, lblIP, lblPort;
     Gtk::Label lblClient;
     Gtk::Button btnBack;
 
-    int serverSocket;  // Socket descriptor for the server
-
-    std::vector<int> connectedClients; // Vector to store connected clients
 };
-
-
 
