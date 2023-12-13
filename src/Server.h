@@ -21,7 +21,7 @@ protected:
     void onBackButtonClicked();
 
 
-    void PingClient(); //Test Function between Client and Server
+    //Test Function between Client and Server
 
 
     //TODO: listenForConnection, acceptClientConnection & updateConnectionLabel functions in theory can be combined into one function
@@ -43,5 +43,7 @@ protected:
 
 
     bool isValidIpAddress(char *ip);
+
+    void PingClient(int clientSocket);
 };
 
