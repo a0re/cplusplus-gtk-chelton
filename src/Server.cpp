@@ -64,27 +64,34 @@ void Server::startServer() {
     // Update the ipAddress member variable
     ipAddress = ip;
 
+
     // Print IP address and port & Update the label
     std::cout << "Server started. IP: " << ipAddress << ", Port: " << ntohs(serverAddress.sin_port) << std::endl;
     lblIP.set_text("IP Address: " + ipAddress);
+    // Accept a client connection
+    struct sockaddr_in clientAddress;
+    socklen_t clientAddrLen = sizeof(clientAddress);
+    int clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddrLen);
 
-    // Accept client connections in a loop
-    while (true) {
-        // Accept a client connection
-        struct sockaddr_in clientAddress;
-        socklen_t clientAddrLen = sizeof(clientAddress);
-        int clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddrLen);
 
-        if (clientSocket == -1) {
-            perror("Error accepting client connection");
-            continue; // Continue to listen for the next connection
-        }
 
-        // Display client information
-        char clientIp[INET_ADDRSTRLEN];
-        inet_ntop(AF_INET, &(clientAddress.sin_addr), clientIp, INET_ADDRSTRLEN);
-        std::cout << "Accepted connection from " << clientIp << ":" << ntohs(clientAddress.sin_port) << std::endl;
+    const char* pingMessage = "PING";
+    send(clientSocket, pingMessage, strlen(pingMessage), 0);
+
+    if (clientSocket == -1) {
+        perror("Error accepting client connection");
+        // Continue to listen for the next connection
     }
+
+
+    // Display client information
+    char clientIp[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(clientAddress.sin_addr), clientIp, INET_ADDRSTRLEN);
+    std::cout << "Accepted connection from " << clientIp << ":" << ntohs(clientAddress.sin_port) << std::endl;
+   /* // Accept client connections in a loop
+    while (true) {
+
+    }*/
 }
 
 // Destructor for the Server class

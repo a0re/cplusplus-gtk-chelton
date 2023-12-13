@@ -82,7 +82,10 @@ void Client::ConnectToServer() {
         ::close(clientSocket);
         return;
     }
-
+    else {
+        const char* pingMessage = "PING";
+        send(clientSocket, pingMessage, strlen(pingMessage), 0);
+    }
 
 }
 
