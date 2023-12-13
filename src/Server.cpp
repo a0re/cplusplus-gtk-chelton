@@ -99,32 +99,29 @@ void Server::startServer() {
         // Close the client socket (you may want to keep it open for further communication)
         ::close(clientSocket);
     }
-/*
-    // Accept client connections in a loop
-    while (true) {
-        // Accept a client connection
-        struct sockaddr_in clientAddress;
-        socklen_t clientAddrLen = sizeof(clientAddress);
-        int clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddrLen);
 
-
-        if (clientSocket == -1) {
-            perror("Error accepting client connection");
-            // Continue to listen for the next connection
-        }
-
-
-        // Display client information
-        char clientIp[INET_ADDRSTRLEN];
-        inet_ntop(AF_INET, &(clientAddress.sin_addr), clientIp, INET_ADDRSTRLEN);
-        std::cout << "Accepted connection from " << clientIp << ":" << ntohs(clientAddress.sin_port) << std::endl;
-    }*/
 }
 
 void Server::PingClient(int clientSocket) {
     const char* pingResponse = "PING_RESPONSE";
     send(clientSocket, pingResponse, strlen(pingResponse), 0);
 }
+
+
+// Destructor for the Server class
+Server::~Server() {
+
+}
+
+
+// Method for Back button
+void Server::onBackButtonClicked() {
+    //TODO: Implement this method properly to go back to the StartView
+    std::cout << "Back Button Clicked" << std::endl;
+}
+
+
+
 /*
 void Server::acceptClientConnections() {
     while (true) {
@@ -175,16 +172,4 @@ void Server::acceptClientConnections() {
         }).detach();
     }
 }*/
-
-// Destructor for the Server class
-Server::~Server() {
-
-}
-
-
-// Method for Back button
-void Server::onBackButtonClicked() {
-    //TODO: Implement this method properly to go back to the StartView
-    std::cout << "Back Button Clicked" << std::endl;
-}
 

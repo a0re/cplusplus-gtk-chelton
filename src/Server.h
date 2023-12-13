@@ -21,29 +21,29 @@ protected:
     void onBackButtonClicked();
 
 
+    // Refer to the screenshots between Max & Dan
+    // Sends Cookie Clicker data to the client for Client to load the game
+    void PingClient(int clientSocket);
+
+
     //Test Function between Client and Server
-
-
     //TODO: listenForConnection, acceptClientConnection & updateConnectionLabel functions in theory can be combined into one function
     //void listenForConnections(); // Listens for connections from clients
     void acceptClientConnections(); // Accepts client connections
+
     //void updateConnectionLabel(); // Updates the connection label
 
     //void LoadGame(); // Load the game? I need to have the window shown in the Server window underneath the IP Address and Port labels
 
-    // Refer to the screenshots between Max & Dan
-    // Sends Cookie Clicker data to the client for Client to load the game
     //void sendGameDataToClient();
-
     /* Layout of Window */
     Gtk::Grid m_grid;
     Gtk::Label lblConnection, lblIP, lblPort;
     Gtk::Label lblClient;
+
+
     Gtk::Button btnBack;
 
 
-    bool isValidIpAddress(char *ip);
-
-    void PingClient(int clientSocket);
 };
 
