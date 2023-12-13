@@ -5,9 +5,6 @@
 #include "CookieClicker.h"
 #include "Server.h"
 
-
-
-
 Client::Client() : clientSocket(-1) {
     set_title("Cookie Clicker: Client");
     set_default_size(550, 450);
@@ -53,13 +50,19 @@ Client::Client() : clientSocket(-1) {
 }
 
 Client::~Client() {
-    // Destructor: Closes the client socket
-    ::close(clientSocket);
+    if (clientSocket != -1) {
+        ::close(clientSocket);
+    }
 }
 void Client::onConnectButtonClicked() {
     ConnectToServer();
 }
 
+/*
+ * ConnectToServer Function
+ * Gets the IP and Port from the user input and connects to the server
+ * Display
+ * */
 
 void Client::ConnectToServer() {
     // Get the server's IP and port from user input
@@ -83,12 +86,17 @@ void Client::ConnectToServer() {
         return;
     }
     else {
-        const char* pingMessage = "PING";
-        send(clientSocket, pingMessage, strlen(pingMessage), 0);
+        PingServer();
     }
 
 }
 
+
+void Client::PingServer() {
+    const char* pingMessage = "PING";
+    send(clientSocket, pingMessage, strlen(pingMessage), 0);
+}
+/*
 
 void Client::updateUI(int cookies, int cps, int cpc_lvl, int cpc_cost, int cps_lvl, int cps_cost) {
     // Update the UI with the received game data
@@ -158,3 +166,4 @@ void Client::loadGame() {
 }
 
 
+*/

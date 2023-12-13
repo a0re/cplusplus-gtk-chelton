@@ -12,7 +12,6 @@ find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(GTKMM REQUIRED gtkmm-4.0)
 
-
 link_directories(${GTKMM_LIBRARY_DIRS})
 
 include_directories(${GTKMM_INCLUDE_DIRS})
@@ -31,8 +30,6 @@ add_executable(Chelton ${SOURCES}
         src/Client.h
         src/StartView.cpp
         src/StartView.h
-
-
 
 )
 

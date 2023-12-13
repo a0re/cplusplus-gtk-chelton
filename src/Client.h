@@ -7,10 +7,16 @@ public:
     virtual ~Client();
 
 protected:
-    void ConnectToServer();
-    void loadGame();
     void onConnectButtonClicked();
-    void updateUI(int cookies, int cps, int cpc_lvl, int cpc_cost, int cps_lvl, int cps_cost);
+    void ConnectToServer();
+
+
+    void PingServer(); //Test Function between Client and Server
+
+    //TODO: Implementation of all these functionality to load the game
+    //void onBackButtonClicked();
+    //void updateUI(int cookies, int cps, int cpc_lvl, int cpc_cost, int cps_lvl, int cps_cost);
+    //void loadGame();
 
     Gtk::Grid m_grid;
 
@@ -25,5 +31,7 @@ protected:
 
     int clientSocket;
 
-    Gtk::Label m_labelCookies, m_labelCPS, m_labelCPCLevel, m_labelCPCCost, m_labelCPSLevel, m_labelCPSCost;
+
+
+    //Gtk::Label m_labelCookies, m_labelCPS, m_labelCPCLevel, m_labelCPCCost, m_labelCPSLevel, m_labelCPSCost;
 };

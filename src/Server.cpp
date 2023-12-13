@@ -64,36 +64,84 @@ void Server::startServer() {
     // Update the ipAddress member variable
     ipAddress = ip;
 
-
     // Print IP address and port & Update the label
     std::cout << "Server started. IP: " << ipAddress << ", Port: " << ntohs(serverAddress.sin_port) << std::endl;
     lblIP.set_text("IP Address: " + ipAddress);
-    // Accept a client connection
-    struct sockaddr_in clientAddress;
+
+
+/*
+    // Accept client connections in a loop
+    while (true) {
+        // Accept a client connection
+        struct sockaddr_in clientAddress;
+        socklen_t clientAddrLen = sizeof(clientAddress);
+        int clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddrLen);
+
+
+        if (clientSocket == -1) {
+            perror("Error accepting client connection");
+            // Continue to listen for the next connection
+        }
+
+
+        // Display client information
+        char clientIp[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &(clientAddress.sin_addr), clientIp, INET_ADDRSTRLEN);
+        std::cout << "Accepted connection from " << clientIp << ":" << ntohs(clientAddress.sin_port) << std::endl;
+    }*/
+}
+
+void Server::PingClient() {
+    char buffer[1024];
+    ssize_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+
+    const char* pingResponse = "PING_RESPONSE";
+    send(clientSocket, pingResponse, strlen(pingResponse), 0);
+
+    if (bytesRead > 0) {
+        buffer[bytesRead] = '\0'; // Null-terminate the received data
+        std::string pingMessage(buffer);
+
+        // Check if the received message is a ping
+        if (pingMessage == "PING") {
+            std::cout << "Ping received from client.\n";
+        } else {
+            std::cerr << "Invalid message received from client.\n";
+        }
+    } else {
+        // Handle error or disconnection
+        std::cerr << "Error receiving ping from client.\n";
+    }
+}
+
+void Server::acceptClientConnections() {
+// Accept a client connection
+    struct sockaddr_in clientAddress{};
     socklen_t clientAddrLen = sizeof(clientAddress);
-    int clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddrLen);
-
-
-
-    const char* pingMessage = "PING";
-    send(clientSocket, pingMessage, strlen(pingMessage), 0);
+    clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddrLen);
 
     if (clientSocket == -1) {
         perror("Error accepting client connection");
         // Continue to listen for the next connection
     }
 
-
     // Display client information
     char clientIp[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(clientAddress.sin_addr), clientIp, INET_ADDRSTRLEN);
     std::cout << "Accepted connection from " << clientIp << ":" << ntohs(clientAddress.sin_port) << std::endl;
-   /* // Accept client connections in a loop
+    lblClient.set_text("Client: " + std::string(clientIp));
+
+    // Accept client connections
     while (true) {
+        clientSocket = accept(serverSocket, nullptr, nullptr);
+        if (clientSocket == -1) {
+            perror("Error accepting client connection");
+            continue;
+        }
+        PingClient();
+    }
 
-    }*/
 }
-
 // Destructor for the Server class
 Server::~Server() {
 
@@ -105,5 +153,7 @@ void Server::onBackButtonClicked() {
     //TODO: Implement this method properly to go back to the StartView
     std::cout << "Back Button Clicked" << std::endl;
 }
+
+
 
 
