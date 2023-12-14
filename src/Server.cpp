@@ -100,8 +100,8 @@ void Server::listeningForClientConnection() {
         pingClient(clientSocket);
         sendGameState();
 
-        std::thread clientUpdateThread(&Server::handleClientUpdates, this, clientSocket);
-        clientUpdateThread.detach();
+        //std::thread clientUpdateThread(&Server::handleClientUpdates, this, clientSocket);
+        //clientUpdateThread.detach();
     }
 }
 
@@ -137,7 +137,14 @@ void Server::handleClientUpdates(int clientSocket) {
     while (true) {
         // Receive the game state from the client
         GameData clientGameData{};
-        recv(clientSocket, &clientGameData, sizeof(GameData), 0);
+        int bytesReceived = recv(clientSocket, &clientGameData, sizeof(GameData), 0);
+
+        if (bytesReceived <= 0) {
+            // Handle disconnection or error
+            std::cerr << "Client disconnected or error occurred." << std::endl;
+            // You might want to break out of the loop or take appropriate action.
+            break;
+        }
 
         // Update the server's game state based on the received data
         cookieClicker.deserializeGameData(clientGameData);
@@ -146,5 +153,6 @@ void Server::handleClientUpdates(int clientSocket) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
+
 
 

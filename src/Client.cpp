@@ -100,10 +100,16 @@ void Client::receiveGameState() {
 void Client::sendGameStateToServer() {
     while (true) {
         GameData gameData = cookieClicker.serializeGameData();
-        send(serverSocket, &gameData, sizeof(GameData), 0);
+        int bytesSent = send(serverSocket, &gameData, sizeof(GameData), 0);
+
+        if (bytesSent != sizeof(GameData)) {
+            // Handle the case where not all data was sent
+            std::cerr << "Not all data sent to the server." << std::endl;
+            // You might want to take appropriate action, such as trying to send again.
+        }
 
         // Adjust the frequency based on your requirements
-        std::this_thread::sleep_for(std::chrono::seconds(100));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
 
