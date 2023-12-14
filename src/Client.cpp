@@ -87,21 +87,6 @@ void Client::ConnectToServer(const std::string& ipAddress, int port) {
 }
 
 
-// Simple Test Function to Ping Between Client and Server
-void Client::pingServer() {
-    const char* pingMessage = "PING";
-    send(clientSocket, pingMessage, strlen(pingMessage), 0);
-    std:: cout << "Hello From Client: Ping Sent" << std::endl;
-
-}
-
-
-void Client::onBackButtonClicked() {
-    //TODO: Implement this method properly to go back to the StartView and call the destructor of the Client Window & socket
-    std::cout << "Back Button Clicked" << std::endl;
-}
-
-
 // receiveGameState() is a method that runs in a loop to receive the game state from the server
 void Client::receiveGameState() {
     while (true) {
@@ -122,3 +107,16 @@ void Client::sendGameStateToServer() {
     }
 }
 
+// Simple Test Function to Ping Between Client and Server
+void Client::pingServer() {
+    const char* pingMessage = "PING";
+    send(clientSocket, pingMessage, strlen(pingMessage), 0);
+    std:: cout << "Hello From Client: Ping Sent" << std::endl;
+
+}
+
+
+void Client::onBackButtonClicked() {
+    //TODO: Implement this method properly to go back to the StartView and call the destructor of the Client Window & socket
+    std::cout << "Back Button Clicked" << std::endl;
+}
