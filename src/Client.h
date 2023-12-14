@@ -8,7 +8,6 @@
 #include "Server.h"
 #include "CookieClicker.h"
 
-
 class Client : public Gtk::Window {
 public:
     Client();
@@ -28,8 +27,8 @@ protected:
     // Button Functionality
     void onConnectButtonClicked();
     void onBackButtonClicked();
-
     void receiveGameState();
+    void sendGameStateToServer();
 
     // Layout of the Gtk::Client Window
     Gtk::Grid m_grid;
@@ -40,6 +39,5 @@ protected:
     Gtk::Button btnConnect, btnBack;
 };
 
-    //TODO: Implementation of all these functionality to load the game
-    //void updateUI(int cookies, int cps, int cpc_lvl, int cpc_cost, int cps_lvl, int cps_cost);
+
 

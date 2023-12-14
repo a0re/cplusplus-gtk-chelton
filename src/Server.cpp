@@ -32,10 +32,6 @@ Server::Server() : serverSocket(-1), cookieClicker() {
     cookieClicker.show();
 }
 
-void Server::runServer() {
-    listeningForClientConnection();
-}
-
 // Method to create a Socket and Create the server
 void Server::startServer() {
     // Create a socket for the server
@@ -103,6 +99,9 @@ void Server::listeningForClientConnection() {
         // Ping the connected client and send the game state
         pingClient(clientSocket);
         sendGameState();
+
+        std::thread clientUpdateThread(&Server::handleClientUpdates, this, clientSocket);
+        clientUpdateThread.detach();
     }
 }
 
@@ -134,6 +133,18 @@ void Server::sendGameState() {
 }
 
 
+void Server::handleClientUpdates(int clientSocket) {
+    while (true) {
+        // Receive the game state from the client
+        GameData clientGameData{};
+        recv(clientSocket, &clientGameData, sizeof(GameData), 0);
 
+        // Update the server's game state based on the received data
+        cookieClicker.deserializeGameData(clientGameData);
+
+        // Adjust the frequency based on your requirements
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+}
 
 

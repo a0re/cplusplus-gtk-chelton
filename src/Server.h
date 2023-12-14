@@ -20,11 +20,11 @@ protected:
     std::string ipAddress;
 
     void startServer();
-    void runServer();
     void onBackButtonClicked();
     void pingClient(int clientSocket);
     void listeningForClientConnection();
     void sendGameState();
+    void handleClientUpdates(int clientSocket);
 
     // Layout of the Gtk::Server Window
     Gtk::Grid m_grid;
@@ -32,12 +32,11 @@ protected:
     Gtk::Label lblClient;
     Gtk::Button btnBack;
 
-
 };
 
     // Refer to the screenshots between Max & Dan
     // Sends Cookie Clicker data to the client for Client to load the game
     //void LoadGame(); // Load the game? I need to have the window shown in the Server window underneath the IP Address and Port labels
 
-    //void sendGameDataToClient();
+
 

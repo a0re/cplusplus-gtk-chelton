@@ -29,12 +29,13 @@ Client::Client() : clientSocket(-1), serverSocket(-1) {
     btnConnect.signal_clicked().connect(sigc::mem_fun(*this, &Client::onConnectButtonClicked));
     btnBack.signal_clicked().connect(sigc::mem_fun(*this, &Client::onBackButtonClicked));
 
-    // Create and show the CookieClicker Window
-    cookieClicker.show();
-
     // Receive and update the game state in a loop
     std::thread clientThread(&Client::receiveGameState, this);
     clientThread.detach();
+
+    // Send the game state to the server in a loop
+    std::thread sendThread(&Client::sendGameStateToServer, this);
+    sendThread.detach();
 }
 
 Client::~Client() {
@@ -76,10 +77,13 @@ void Client::ConnectToServer(const std::string& ipAddress, int port) {
         lblStatus.set_text("Status: Connection Failed");
         return;
     }
+
     // Connection successful
     lblStatus.set_text("Status: Connected to Server");
     pingServer();
 
+    // Create and show the CookieClicker Window
+    cookieClicker.show();
 }
 
 
@@ -97,6 +101,8 @@ void Client::onBackButtonClicked() {
     std::cout << "Back Button Clicked" << std::endl;
 }
 
+
+// receiveGameState() is a method that runs in a loop to receive the game state from the server
 void Client::receiveGameState() {
     while (true) {
         GameData gameData{};
@@ -105,3 +111,14 @@ void Client::receiveGameState() {
         cookieClicker.deserializeGameData(gameData);
     }
 }
+
+void Client::sendGameStateToServer() {
+    while (true) {
+        GameData gameData = cookieClicker.serializeGameData();
+        send(serverSocket, &gameData, sizeof(GameData), 0);
+
+        // Adjust the frequency based on your requirements
+        std::this_thread::sleep_for(std::chrono::seconds(100));
+    }
+}
+
