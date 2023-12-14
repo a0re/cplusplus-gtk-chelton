@@ -35,7 +35,7 @@ Server::Server() : serverSocket(-1), cookieClicker() {
     cookieClicker.show();
 }
 
-// Method to create a Socket and Create the server
+// Method to create a Socket and acts as the Server
 void Server::startServer() {
     // Create a socket for the server
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -125,10 +125,11 @@ void Server::listeningForClientConnection() {
         lblClient.set_text("Client: " + std::string(clientIp) + ":" + std::to_string(ntohs(clientAddress.sin_port)));
 
         pingClient(clientSocket);
-        sendGameState();
 
-        std::thread serverThread(&Server::receiveAndUpdateGameState, this);
-        serverThread.detach();
+        // Send the game state to the client through a separate thread
+        std::thread sendGameStateThread(&Server::sendGameState, this);
+        sendGameStateThread.detach();
+
     }
 }
 
@@ -143,7 +144,6 @@ void Server::pingClient(int clientSocket) {
 void Server::onBackButtonClicked() {
     //TODO: Max - Implement this method properly to go back to the StartView
     //Also Call the Destructor for the Server Class to close the server socket
-
     std::cout << "Back Button Clicked" << std::endl;
 
 }
@@ -163,10 +163,3 @@ void Server::sendGameState() {
     send(clientSocket, &gameData, sizeof(GameData), 0);
 }
 
-void Server::receiveAndUpdateGameState() {
-    GameData receivedGameData{};
-    recv(clientSocket, &receivedGameData, sizeof(GameData), 0);
-    cookieClicker.deserializeGameData(receivedGameData);
-
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-}

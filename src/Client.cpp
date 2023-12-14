@@ -6,12 +6,11 @@ Client::Client() : clientSocket(-1), serverSocket(-1) {
     set_title("Cookie Clicker: Client");
     set_default_size(550, 450);
 
-    //
+    // Set the labels and buttons for the Client Window
     lblIP.set_text("Server IP:");
     lblPort.set_text("Port:");
     lblStatus.set_text("Status: Not Connected");
-    txtPort.set_text(std::to_string(port));
-
+    txtPort.set_text(std::to_string(port)); // Set the default port number to 5050
     btnConnect.set_label("Connect");
     btnBack.set_label("Back");
 
@@ -33,6 +32,7 @@ Client::Client() : clientSocket(-1), serverSocket(-1) {
 
 }
 
+// Destructor for the Client class
 Client::~Client() {
     // Close the client socket if it's open
     if (clientSocket != -1) {
@@ -40,8 +40,11 @@ Client::~Client() {
     }
 }
 
+
+// Method: onConnectButtonClicked
+// Purpose: Connect to the server when the Connect button is clicked
 void Client::onConnectButtonClicked() {
-    // Get the IP address and port from the entry fields
+    // Retrieve the IP address and port number from the entry boxes then initialize the client socket
     ipAddress = txtIP.get_text();
     std::string portStr = txtPort.get_text();
     int port = std::stoi(portStr);
@@ -50,6 +53,12 @@ void Client::onConnectButtonClicked() {
     ConnectToServer(ipAddress, port);
 }
 
+/////////////////////////////////////////////////////////////////////////////
+// Overview:
+// Create a socket for the client, initializes the server address structure similar to the Server.cpp.
+// If Connecttion to the server is successful, Updates the UI status label accordingly, Additionally
+// A new thread is created to receive the game state from the server through the receiveGameState() method.
+/////////////////////////////////////////////////////////////////////////////
 void Client::ConnectToServer(const std::string& ipAddress, int port) {
     // Create a socket for the client
     clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -62,25 +71,24 @@ void Client::ConnectToServer(const std::string& ipAddress, int port) {
 
     struct sockaddr_in serverAddress{};
     memset(&serverAddress, 0, sizeof(serverAddress));
-    serverAddress.sin_family = AF_INET; // Set the address family to IPv4
-    serverAddress.sin_addr.s_addr = inet_addr(ipAddress.c_str()); // Set the server IP address
-    serverAddress.sin_port = htons(port); // Set the server port
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_addr.s_addr = inet_addr(ipAddress.c_str());
+    serverAddress.sin_port = htons(port);
 
-    // Connect to the server
+    // Attempt to connect to the server using the clientSocket and serverAddress.
     if (connect(clientSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1) {
+        // If the connection fails, display an error message & update the UI status label
+        // and exit the method.
         perror("Error connecting to server");
         lblStatus.set_text("Status: Connection Failed");
         return;
     }
-    // Connection successful
+    // Connection successful: Update the UI status label to indicate a successful connection.
     lblStatus.set_text("Status: Connected to Server");
-    pingServer();
+    //std::cout << "Connected to " <<  << std::endl;
 
-
+    // Create a new thread to receive the game state from the server
     std::thread clientThread(&Client::receiveGameState, this);
-    clientThread.detach();
-
-    std::thread clientThread2(&Client::sendGameDataToServer, this);
     clientThread.detach();
 
     cookieClicker.show();
@@ -89,6 +97,7 @@ void Client::ConnectToServer(const std::string& ipAddress, int port) {
 
 // receiveGameState() is a method that runs in a loop to receive the game state from the server
 void Client::receiveGameState() {
+    // This while loop is required otherwise the Cookies and CPS Becomes a really large number
     while (true) {
         GameData gameData{};
         recv(clientSocket, &gameData, sizeof(GameData), 0);
@@ -103,8 +112,6 @@ void Client::receiveGameState() {
 void Client::pingServer() {
     const char* pingMessage = "PING";
     send(clientSocket, pingMessage, strlen(pingMessage), 0);
-    std:: cout << "Hello From Client: Ping Sent" << std::endl;
-
 }
 
 void Client::onBackButtonClicked() {

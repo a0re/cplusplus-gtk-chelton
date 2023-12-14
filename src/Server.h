@@ -21,11 +21,11 @@ protected:
     std::string ipAddress;
 
     // Methods Used
-    void startServer(); // Method to create the socket and acts as the server
-    void pingClient(int clientSocket); // Simple Method to ping the client connected
+    void startServer();                  // Method to create the socket and acts as the server
+    void pingClient(int clientSocket);   // Simple Method to ping the client connected
     void listeningForClientConnection(); // Listen to incoming Client, This is done in a separate thread
-    void sendGameState(); // Sending Binary Serialization to the Client
-    void onBackButtonClicked(); // Back button to StartView Window
+    void sendGameState();                // Sending Binary Serialization to the Client
+    void onBackButtonClicked();          // Back button to StartView Window
 
     // Layout of the Gtk::Server Window
     Gtk::Grid m_grid;
@@ -33,10 +33,6 @@ protected:
     Gtk::Label lblClient;
     Gtk::Button btnBack;
 
-
-    void receiveAndUpdateGameState();
 };
 
-// Todo: updateGameState from Client
-
-
+// Todo: updateGameState from Client to Server

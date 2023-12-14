@@ -15,6 +15,7 @@ public:
     virtual ~Client();
 
 protected:
+    // Variables
     CookieClicker cookieClicker;
     int clientSocket;
     int serverSocket;
@@ -25,9 +26,9 @@ protected:
     void ConnectToServer(const std::string &ipAddress, int port); // Connect to the server
 
     // Button Functionality
-    void onConnectButtonClicked(); // Call ConnectToServer Method
-    void onBackButtonClicked(); // Back to StartPage
-    void receiveGameState(); // Receive Binary Serialization from the Server
+    void onConnectButtonClicked();  // Call ConnectToServer Method
+    void onBackButtonClicked();     // Back to StartPage
+    void receiveGameState();        // Receive Binary Serialization from the Server
 
     // Layout of the Gtk::Client Window
     Gtk::Grid m_grid;
