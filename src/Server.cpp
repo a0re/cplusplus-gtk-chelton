@@ -100,8 +100,8 @@ void Server::listeningForClientConnection() {
         pingClient(clientSocket);
         sendGameState();
 
-        //std::thread clientUpdateThread(&Server::handleClientUpdates, this, clientSocket);
-        //clientUpdateThread.detach();
+        std::thread clientUpdateThread(&Server::handleClientUpdates, this, clientSocket);
+        clientUpdateThread.detach();
     }
 }
 
