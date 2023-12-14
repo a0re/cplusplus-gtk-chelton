@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Server.h"
-#include "CookieClicker.h"
+
 Server::Server() : serverSocket(-1), cookieClicker() {
     // Setting basic Titles and Dimension of Window
     set_title("Cookie Clicker: Server");
@@ -22,10 +22,10 @@ Server::Server() : serverSocket(-1), cookieClicker() {
     m_grid.attach(lblClient, 0, 4, 1, 1);
     m_grid.attach(btnBack, 0, 5, 1, 1);
 
-    // Connect signal handler for the Back button
+    // Connect signal method for the Back button
     btnBack.signal_clicked().connect(sigc::mem_fun(*this, &Server::onBackButtonClicked));
 
-    // Listen for Connections from Clients | This is being run on separate thread since the server will be running in an infinite loop
+    // Call the startServer Method & Listen for Connections from Clients | This is being run on separate thread since the server will be running in an infinite loop
     // This is done so no issues occur with the Rendering the Gtkmm::Window
     startServer();
     std::thread serverThread(&Server::listeningForClientConnection, this);
@@ -47,10 +47,12 @@ void Server::startServer() {
 
     /////////////////////////////////////////////////////////////////////////////
     // Overview:
-    // Set the Address Family to IPv4
-    // Setting the IP Address to any interface
-    // Set the Port Number to 5050
+    // Create & Configures the sockaddr_in struct, Set the Address Family to AF_INET (IPv4)
+    // Bind the Socket to any available network interface (INADDR_ANY)
+    // Bind the Server Socket to the IP Address & Port Number: 5050
+    // If it fails an error displays and exits the program.
     /////////////////////////////////////////////////////////////////////////////
+
     struct sockaddr_in serverAddress{};
     memset(&serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
@@ -63,13 +65,14 @@ void Server::startServer() {
         exit(EXIT_FAILURE);
     }
 
-    // Get the assigned port
-    // Length of the Address and PortNumber
+    // Obtain the size (in bytes) of the serverAddress structure and store it in addrLen
     socklen_t addrLen = sizeof(serverAddress);
+    // Get the local address information associated with the bound server socket
     getsockname(serverSocket, (struct sockaddr *) &serverAddress, &addrLen);
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // Overview:
     // Get the hostname of the Server
     // Get the IP Address of the Server from the hostname
     // Convert the IP Address to a human readable form
@@ -130,17 +133,20 @@ void Server::listeningForClientConnection() {
     }
 }
 
-// Method to ping the client
+// Method: pingClient
+// Purpose: Send a PING_RESPONSE message to the client socket & Sends only a simple string message
 void Server::pingClient(int clientSocket) {
-    const char* pingResponse = "PING_RESPONSE"; // Response to send to the client
-    send(clientSocket, pingResponse, strlen(pingResponse), 0); // Send the response to the client
+    const char* pingResponse = "PING_RESPONSE";
+    send(clientSocket, pingResponse, strlen(pingResponse), 0);
 }
 
 // Method for Back button
 void Server::onBackButtonClicked() {
     //TODO: Max - Implement this method properly to go back to the StartView
     //Also Call the Destructor for the Server Class to close the server socket
+
     std::cout << "Back Button Clicked" << std::endl;
+
 }
 
 // Destructor for the Server class
@@ -151,8 +157,8 @@ Server::~Server() {
     }
 }
 
-// Method to send the game state to the client when connected
-// Calling the CookieClicker Serialization method to send to the client
+// Sends serialized game data to the client using the cookieClicker object.
+// Assumes the existence of a GameData structure and the clientSocket variable.
 void Server::sendGameState() {
     GameData gameData = cookieClicker.serializeGameData();
     send(clientSocket, &gameData, sizeof(GameData), 0);

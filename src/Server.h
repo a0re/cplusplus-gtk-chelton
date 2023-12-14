@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <thread>
 #include "CookieClicker.h"
+#include "StartView.h"
 
 class Server : public Gtk::Window {
 public:
@@ -14,17 +15,19 @@ public:
     virtual ~Server();  // Destructor for the Server class
 
 protected:
+    // Variables
     CookieClicker cookieClicker;
     int serverSocket;
     int clientSocket;
     std::string ipAddress;
 
-    //
-    void startServer();
-    void pingClient(int clientSocket);
-    void listeningForClientConnection(); // Listen to incoming Client
+    // Methods Used
+    void startServer(); // Method to create the socket and acts as the server
+    void pingClient(int clientSocket); // Simple Method to ping the client connected
+    void listeningForClientConnection(); // Listen to incoming Client, This is done in a separate thread
     void sendGameState(); // Sending Binary Serialization to the Client
-    void onBackButtonClicked(); //
+    void onBackButtonClicked(); // Back button to StartView Window
+
     void updateGameState(const GameData& gameData);
 
     // Layout of the Gtk::Server Window
