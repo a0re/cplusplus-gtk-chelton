@@ -2,9 +2,11 @@
 #include "Server.h"
 #include "CookieClicker.h"
 Server::Server() : serverSocket(-1), cookieClicker() {
+    // Setting basic Titles and Dimension of Window
     set_title("Cookie Clicker: Server");
     set_default_size(550, 450);
 
+    // Set Label Information for Clients to join | IP + Port
     lblConnection.set_text("Connection Details:");
     lblPort.set_text("Port: 5050");
     lblClient.set_text("Client: ");
@@ -13,11 +15,12 @@ Server::Server() : serverSocket(-1), cookieClicker() {
     m_grid.set_margin(20);
     set_child(m_grid);
 
-    m_grid.attach(btnBack, 0, 0, 1, 1);
+    // Attach all labels + buttons into the Grid
     m_grid.attach(lblConnection, 0, 1, 1, 1);
     m_grid.attach(lblIP, 0, 2, 1, 1);
     m_grid.attach(lblPort, 0, 3, 1, 1);
     m_grid.attach(lblClient, 0, 4, 1, 1);
+    m_grid.attach(btnBack, 0, 5, 1, 1);
 
     // Connect signal handler for the Back button
     btnBack.signal_clicked().connect(sigc::mem_fun(*this, &Server::onBackButtonClicked));
@@ -42,11 +45,17 @@ void Server::startServer() {
         exit(EXIT_FAILURE);
     }
 
+    /////////////////////////////////////////////////////////////////////////////
+    // Overview:
+    // Set the Address Family to IPv4
+    // Setting the IP Address to any interface
+    // Set the Port Number to 5050
+    /////////////////////////////////////////////////////////////////////////////
     struct sockaddr_in serverAddress{};
     memset(&serverAddress, 0, sizeof(serverAddress));
-    serverAddress.sin_family = AF_INET; // Set the address family to IPv4
-    serverAddress.sin_addr.s_addr = htonl(INADDR_ANY); // Setting the IP address to any interface
-    serverAddress.sin_port = htons(5050); // Setting the port Number
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+    serverAddress.sin_port = htons(5050);
 
     // Bind the newly created socket to the given IP address
     if (bind(serverSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress)) == -1) {
@@ -55,22 +64,28 @@ void Server::startServer() {
     }
 
     // Get the assigned port
-    socklen_t addrLen = sizeof(serverAddress); // Length of the address
-    getsockname(serverSocket, (struct sockaddr *) &serverAddress, &addrLen); // Get the port number
+    // Length of the Address and PortNumber
+    socklen_t addrLen = sizeof(serverAddress);
+    getsockname(serverSocket, (struct sockaddr *) &serverAddress, &addrLen);
 
-    // Get the IP address
-    char hostname[256]; // Hostname of the computer we are running on
-    gethostname(hostname, sizeof(hostname)); // Get the hostname of the server
-    struct hostent *host = gethostbyname(hostname); // Get the IP address of the server from the hostname
-    char *ip = inet_ntoa(*(struct in_addr *) host->h_addr); // Convert the IP address in a human readable form
 
+    /////////////////////////////////////////////////////////////////////////////
+    // Get the hostname of the Server
+    // Get the IP Address of the Server from the hostname
+    // Convert the IP Address to a human readable form
     // Update the ipAddress member variable
+    /////////////////////////////////////////////////////////////////////////////
+    char hostname[256];
+    gethostname(hostname, sizeof(hostname));
+    struct hostent *host = gethostbyname(hostname);
+    char *ip = inet_ntoa(*(struct in_addr *) host->h_addr);
     ipAddress = ip;
 
     // Print IP address and port & Update the label to Connect
     std::cout << "Server started. IP: " << ipAddress << ", Port: " << ntohs(serverAddress.sin_port) << std::endl;
     lblIP.set_text("IP Address: " + ipAddress);
 }
+
 // Method to listen for client connections and accept them | This method will run in a separate thread since it will be running in an infinite loop
 void Server::listeningForClientConnection() {
     // Listen for connections from clients
@@ -80,6 +95,11 @@ void Server::listeningForClientConnection() {
     }
 
     while (true) {
+        /////////////////////////////////////////////////////////////////////////////
+        // Client Address Information
+        // Get the Client Address Length
+        // Accept the connection from the Client
+        /////////////////////////////////////////////////////////////////////////////
         std:: cout << "Listening for connections..." << std::endl;
         struct sockaddr_in clientAddress{}; // Client address information
         socklen_t clientAddrLen = sizeof(clientAddress); // Length of the client address
@@ -90,18 +110,23 @@ void Server::listeningForClientConnection() {
             continue;  // Continue listening for the next connection
         }
 
-        // Display client information and ping the client
+        /////////////////////////////////////////////////////////////////////////////
+        // Store the Client IP Address
+        // Convert the Client IP Address to a readable form
+        // Print Client IP Address & Port in the Terminal & Update the lblClient Label to connected.
+        // Use the pingClient Method to confirm Connection has been made & Send Server's CookieClicker Game State through sendGameState method.
+        /////////////////////////////////////////////////////////////////////////////
         char clientIp[INET_ADDRSTRLEN]; // Buffer to store the client IP address
-        inet_ntop(AF_INET, &(clientAddress.sin_addr), clientIp, INET_ADDRSTRLEN); // Convert the client IP address to a human readable form
-        std::cout << "Client connected. IP: " << clientIp << ", Port: " << ntohs(clientAddress.sin_port) << std::endl; // Print the client IP address and port
-        lblClient.set_text("Client: " + std::string(clientIp) + ":" + std::to_string(ntohs(clientAddress.sin_port))); // Update the label to show the client IP address and port
+        inet_ntop(AF_INET, &(clientAddress.sin_addr), clientIp, INET_ADDRSTRLEN);
+        std::cout << "Client connected. IP: " << clientIp << ", Port: " << ntohs(clientAddress.sin_port) << std::endl;
+        lblClient.set_text("Client: " + std::string(clientIp) + ":" + std::to_string(ntohs(clientAddress.sin_port)));
 
-        // Ping the connected client and send the game state
         pingClient(clientSocket);
         sendGameState();
 
-        std::thread clientUpdateThread(&Server::handleClientUpdates, this, clientSocket);
-        clientUpdateThread.detach();
+        //ignore this for the moment
+        //std::thread clientUpdateThread(&Server::handleClientUpdates, this, clientSocket);
+        //clientUpdateThread.detach();
     }
 }
 
@@ -113,7 +138,7 @@ void Server::pingClient(int clientSocket) {
 
 // Method for Back button
 void Server::onBackButtonClicked() {
-    //TODO: Implement this method properly to go back to the StartView
+    //TODO: Max - Implement this method properly to go back to the StartView
     //Also Call the Destructor for the Server Class to close the server socket
     std::cout << "Back Button Clicked" << std::endl;
 }
@@ -127,32 +152,13 @@ Server::~Server() {
 }
 
 // Method to send the game state to the client when connected
+// Calling the CookieClicker Serialization method to send to the client
 void Server::sendGameState() {
     GameData gameData = cookieClicker.serializeGameData();
     send(clientSocket, &gameData, sizeof(GameData), 0);
 }
 
+void Server::updateGameState(const GameData &gameData) {
 
-void Server::handleClientUpdates(int clientSocket) {
-    while (true) {
-        // Receive the game state from the client
-        GameData clientGameData{};
-        int bytesReceived = recv(clientSocket, &clientGameData, sizeof(GameData), 0);
-
-        if (bytesReceived <= 0) {
-            // Handle disconnection or error
-            std::cerr << "Client disconnected or error occurred." << std::endl;
-            // You might want to break out of the loop or take appropriate action.
-            break;
-        }
-
-        // Update the server's game state based on the received data
-        cookieClicker.deserializeGameData(clientGameData);
-
-        // Adjust the frequency based on your requirements
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
 }
-
-
 
