@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Server.h"
-
-Server::Server() : serverSocket(-1){
+#include "CookieClicker.h"
+Server::Server() : serverSocket(-1), cookieClicker() {
     set_title("Cookie Clicker: Server");
     set_default_size(550, 450);
 
@@ -22,16 +22,17 @@ Server::Server() : serverSocket(-1){
     // Connect signal handler for the Back button
     btnBack.signal_clicked().connect(sigc::mem_fun(*this, &Server::onBackButtonClicked));
 
-
-    // Start the Server & Listen for Connections from Clients
-    // This is being run on separate thread since the server will be running in an infinite loop
+    // Listen for Connections from Clients | This is being run on separate thread since the server will be running in an infinite loop
     // This is done so no issues occur with the Rendering the Gtkmm::Window
+    startServer();
     std::thread serverThread(&Server::listeningForClientConnection, this);
     serverThread.detach();
+
+    // Create and show the CookieClicker Window | This is separate windows because I'm lazy at the moment.
+    cookieClicker.show();
 }
 
 void Server::runServer() {
-    startServer();
     listeningForClientConnection();
 }
 
@@ -74,8 +75,6 @@ void Server::startServer() {
     std::cout << "Server started. IP: " << ipAddress << ", Port: " << ntohs(serverAddress.sin_port) << std::endl;
     lblIP.set_text("IP Address: " + ipAddress);
 }
-
-
 // Method to listen for client connections and accept them | This method will run in a separate thread since it will be running in an infinite loop
 void Server::listeningForClientConnection() {
     // Listen for connections from clients
@@ -101,21 +100,22 @@ void Server::listeningForClientConnection() {
         std::cout << "Client connected. IP: " << clientIp << ", Port: " << ntohs(clientAddress.sin_port) << std::endl; // Print the client IP address and port
         lblClient.set_text("Client: " + std::string(clientIp) + ":" + std::to_string(ntohs(clientAddress.sin_port))); // Update the label to show the client IP address and port
 
-        // Ping the connected client
-        PingClient(clientSocket);
-
+        // Ping the connected client and send the game state
+        pingClient(clientSocket);
+        sendGameState();
     }
 }
 
-void Server::PingClient(int clientSocket) {
+// Method to ping the client
+void Server::pingClient(int clientSocket) {
     const char* pingResponse = "PING_RESPONSE"; // Response to send to the client
     send(clientSocket, pingResponse, strlen(pingResponse), 0); // Send the response to the client
 }
 
-
 // Method for Back button
 void Server::onBackButtonClicked() {
     //TODO: Implement this method properly to go back to the StartView
+    //Also Call the Destructor for the Server Class to close the server socket
     std::cout << "Back Button Clicked" << std::endl;
 }
 
@@ -127,8 +127,12 @@ Server::~Server() {
     }
 }
 
-/*void Server::LoadGame() {
-}*/
+// Method to send the game state to the client when connected
+void Server::sendGameState() {
+    GameData gameData = cookieClicker.serializeGameData();
+    send(clientSocket, &gameData, sizeof(GameData), 0);
+}
+
 
 
 

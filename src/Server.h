@@ -6,7 +6,7 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <thread>
-
+#include "CookieClicker.h"
 
 class Server : public Gtk::Window {
 public:
@@ -14,17 +14,17 @@ public:
     virtual ~Server();  // Destructor for the Server class
 
 protected:
+    CookieClicker cookieClicker;
     int serverSocket;
     int clientSocket;
     std::string ipAddress;
 
-
     void startServer();
     void runServer();
     void onBackButtonClicked();
-    void PingClient(int clientSocket);
+    void pingClient(int clientSocket);
     void listeningForClientConnection();
-
+    void sendGameState();
 
     // Layout of the Gtk::Server Window
     Gtk::Grid m_grid;
@@ -32,11 +32,12 @@ protected:
     Gtk::Label lblClient;
     Gtk::Button btnBack;
 
+
+};
+
     // Refer to the screenshots between Max & Dan
     // Sends Cookie Clicker data to the client for Client to load the game
     //void LoadGame(); // Load the game? I need to have the window shown in the Server window underneath the IP Address and Port labels
 
     //void sendGameDataToClient();
-
-};
 

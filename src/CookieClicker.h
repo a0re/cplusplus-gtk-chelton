@@ -5,6 +5,15 @@
 #include <iostream>
 #include <chrono>
 
+// Struct GameData is used to serialize and deserialize the game data
+struct GameData {
+    int cookieCount;
+    int cpsCount;
+    int cpcLvlCount;
+    int cpcCostCount;
+    int cpsLvlCount;
+    int cpsCostCount;
+};
 
 class CookieClicker : public Gtk::Window
 {
@@ -12,10 +21,15 @@ public:
     // Game Window Rendering
     CookieClicker();
 
+    // Serialize the game data & Deserialize the game data
+    GameData serializeGameData() const;
+    void deserializeGameData(const GameData& gameData);
+
     // [ TODO: Socket Connect Window? This comment doesn't make sense ]
+
+
 protected:
-    //Variables:
-    // Stores Count Values
+    //Variables: Stores Count Values
     int m_cookie_count;
     int m_cps_count;
     int m_cpc_lvl_count;
@@ -61,6 +75,4 @@ protected:
                 m_button_2,
                 m_button_3;
 };
-
-
 

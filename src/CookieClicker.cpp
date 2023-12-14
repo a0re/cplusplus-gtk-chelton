@@ -64,7 +64,7 @@ CookieClicker::CookieClicker()
 }
 
 // Prints to console: 'Button was pressed'
- // [ For testing purposes only. Verifies Buttons are being called to functions ]
+// [ For testing purposes only. Verifies Buttons are being called to functions ]
 void CookieClicker::on_button_numbered(const Glib::ustring& data)
 {
     std::cout << data << " was pressed" << std::endl;
@@ -72,7 +72,7 @@ void CookieClicker::on_button_numbered(const Glib::ustring& data)
 
 // [ Functions are in this file for testing currently ]
 // [ TODO: Move Functions to other files ]
-    // Increments Cookies
+// Increments Cookies
 void CookieClicker::on_cookie_button_clicked() {
     // Increments Cookies by CPC LVL
     m_cookie_count += m_cpc_lvl_count;
@@ -119,7 +119,7 @@ void CookieClicker::on_cps_button_clicked() {
 }
 
 // Updates the View each time corresponding function is called to
- // [ TODO: Verification ]
+// [ TODO: Verification ]
 void CookieClicker::update_label_1() {
     m_label_1.set_text("Cookies: " + std::to_string(m_cookie_count));
 }
@@ -159,4 +159,33 @@ bool CookieClicker::update_cps_callback() {
     return true;
 }
 
+// Method to serialize game data
+GameData CookieClicker::serializeGameData() const {
+    GameData gameData{};
+    gameData.cookieCount = m_cookie_count;
+    gameData.cpsCount = m_cps_count;
+    gameData.cpcLvlCount = m_cpc_lvl_count;
+    gameData.cpcCostCount = m_cpc_cost_count;
+    gameData.cpsLvlCount = m_cps_lvl_count;
+    gameData.cpsCostCount = m_cps_cost_count;
+    return gameData;
+}
+
+// Method to deserialize game data
+void CookieClicker::deserializeGameData(const GameData& gameData) {
+    m_cookie_count = gameData.cookieCount;
+    m_cps_count = gameData.cpsCount;
+    m_cpc_lvl_count = gameData.cpcLvlCount;
+    m_cpc_cost_count = gameData.cpcCostCount;
+    m_cps_lvl_count = gameData.cpsLvlCount;
+    m_cps_cost_count = gameData.cpsCostCount;
+
+    // Update UI or perform other actions based on the received game data
+    update_label_1();
+    update_label_2();
+    update_label_3();
+    update_label_4();
+    update_label_5();
+    update_label_6();
+}
 

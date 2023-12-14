@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "CookieClicker.h"
 
 Client::Client() : clientSocket(-1), serverSocket(-1) {
     set_title("Cookie Clicker: Client");
@@ -27,6 +28,13 @@ Client::Client() : clientSocket(-1), serverSocket(-1) {
     // Connect signal handlers
     btnConnect.signal_clicked().connect(sigc::mem_fun(*this, &Client::onConnectButtonClicked));
     btnBack.signal_clicked().connect(sigc::mem_fun(*this, &Client::onBackButtonClicked));
+
+    // Create and show the CookieClicker Window
+    cookieClicker.show();
+
+    // Receive and update the game state in a loop
+    std::thread clientThread(&Client::receiveGameState, this);
+    clientThread.detach();
 }
 
 Client::~Client() {
@@ -70,13 +78,13 @@ void Client::ConnectToServer(const std::string& ipAddress, int port) {
     }
     // Connection successful
     lblStatus.set_text("Status: Connected to Server");
-
+    pingServer();
 
 }
 
 
 // Simple Test Function to Ping Between Client and Server
-void Client::PingServer() {
+void Client::pingServer() {
     const char* pingMessage = "PING";
     send(clientSocket, pingMessage, strlen(pingMessage), 0);
     std:: cout << "Hello From Client: Ping Sent" << std::endl;
@@ -85,7 +93,15 @@ void Client::PingServer() {
 
 
 void Client::onBackButtonClicked() {
-    //TODO: Implement this method properly to go back to the StartView
+    //TODO: Implement this method properly to go back to the StartView and call the destructor of the Client Window & socket
     std::cout << "Back Button Clicked" << std::endl;
 }
 
+void Client::receiveGameState() {
+    while (true) {
+        GameData gameData{};
+        recv(clientSocket, &gameData, sizeof(GameData), 0);
+        // Update the game state in the CookieClicker window
+        cookieClicker.deserializeGameData(gameData);
+    }
+}
