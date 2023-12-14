@@ -159,28 +159,35 @@ bool CookieClicker::update_cps_callback() {
     return true;
 }
 
-// Method to serialize game data
+// Serialize the game data into a struct for transmission for both Client & Server
 GameData CookieClicker::serializeGameData() const {
+    // Create a GameData struct to store the game data
     GameData gameData{};
-    gameData.cookieCount = m_cookie_count;
-    gameData.cpsCount = m_cps_count;
-    gameData.cpcLvlCount = m_cpc_lvl_count;
-    gameData.cpcCostCount = m_cpc_cost_count;
-    gameData.cpsLvlCount = m_cps_lvl_count;
-    gameData.cpsCostCount = m_cps_cost_count;
+
+    // Copy the internal game state variables to the serialized structure
+    gameData.cookieCount = m_cookie_count;      // Total cookie count
+    gameData.cpsCount = m_cps_count;            // Cookies per second count
+    gameData.cpcLvlCount = m_cpc_lvl_count;     // Cookie per click level count
+    gameData.cpcCostCount = m_cpc_cost_count;   // Cookie per click cost count
+    gameData.cpsLvlCount = m_cps_lvl_count;     // Cookies per second level count
+    gameData.cpsCostCount = m_cps_cost_count;   // Cookies per second cost count
+
+    // Return the serialized game data
     return gameData;
 }
 
-// Method to deserialize game data
+// Deserialize the provided GameData structure and update the game state
 void CookieClicker::deserializeGameData(const GameData& gameData) {
-    m_cookie_count = gameData.cookieCount;
-    m_cps_count = gameData.cpsCount;
-    m_cpc_lvl_count = gameData.cpcLvlCount;
-    m_cpc_cost_count = gameData.cpcCostCount;
-    m_cps_lvl_count = gameData.cpsLvlCount;
-    m_cps_cost_count = gameData.cpsCostCount;
+    // Update internal game state variables with values from the deserialized structure
+    m_cookie_count = gameData.cookieCount;      // Update total cookie count
+    m_cps_count = gameData.cpsCount;            // Update cookies per second count
+    m_cpc_lvl_count = gameData.cpcLvlCount;     // Update cookie per click level count
+    m_cpc_cost_count = gameData.cpcCostCount;   // Update cookie per click cost count
+    m_cps_lvl_count = gameData.cpsLvlCount;     // Update cookies per second level count
+    m_cps_cost_count = gameData.cpsCostCount;   // Update cookies per second cost count
 
-    // Update UI or perform other actions based on the received game data
+    // Perform UI updates or other actions based on the received game data
+    // These functions are placeholders; replace them with actual UI update logic
     update_label_1();
     update_label_2();
     update_label_3();

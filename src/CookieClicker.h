@@ -7,12 +7,12 @@
 
 // Struct GameData is used to serialize and deserialize the game data | These variables are to serialize and deserialize the game data between client and server
 struct GameData {
-    int cookieCount;
-    int cpsCount;
-    int cpcLvlCount;
-    int cpcCostCount;
-    int cpsLvlCount;
-    int cpsCostCount;
+    int cookieCount;    // Total cookie count
+    int cpsCount;       // Cookies per second count
+    int cpcLvlCount;    // Cookie per click level count
+    int cpcCostCount;   // Cookie per click cost count
+    int cpsLvlCount;    // Cookies per second level count
+    int cpsCostCount;   // Cookies per second cost count
 };
 
 class CookieClicker : public Gtk::Window
@@ -21,22 +21,19 @@ public:
     // Game Window Rendering
     CookieClicker();
 
-    // Serialize the game data & Deserialize the game data
+    // Serialize the game data & Deserialize the game data for both Client & Server
     GameData serializeGameData() const;
     void deserializeGameData(const GameData& gameData);
 
-    // [ TODO: Socket Connect Window? This comment doesn't make sense ]
-
-
 protected:
     //Variables: Stores Count Values
-    int m_cookie_count;
-    int m_cps_count;
-    int m_cpc_lvl_count;
-    int m_cpc_cost_count;
-    int m_cps_lvl_count;
-    int m_cps_cost_count;
-    int intervalMilliseconds = 1000;
+    int m_cookie_count;              // Total cookie count
+    int m_cps_count;                 // Cookies per second count
+    int m_cpc_lvl_count;             // Cookie per click level count
+    int m_cpc_cost_count;            // Cookie per click cost count
+    int m_cps_lvl_count;             // Cookies per second level count
+    int m_cps_cost_count;            // Cookies per second cost count
+    int intervalMilliseconds = 1000; // Interval for CPS
 
     // Signal Handlers:
         // Writes to screen when button (Gtk::Button (variable)) is pressed
@@ -48,7 +45,7 @@ protected:
     void on_cps_button_clicked();
     bool update_cps_callback();
 
-        // Updates view
+    // Updates view | This is to update the label text. In my opinion there should be a better way to do this then to have 6 different functions.
     void update_label_1();
     void update_label_2();
     void update_label_3();
