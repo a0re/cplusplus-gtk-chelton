@@ -5,7 +5,7 @@
 #include <iostream>
 #include <chrono>
 
-// Struct GameData is used to serialize and deserialize the game data
+// Struct GameData is used to serialize and deserialize the game data | These variables are to serialize and deserialize the game data between client and server
 struct GameData {
     int cookieCount;
     int cpsCount;

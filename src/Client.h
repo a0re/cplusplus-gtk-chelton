@@ -1,17 +1,17 @@
 #pragma once
 #include <gtkmm.h>
 #include <iostream>
-#include <cstring>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <thread>
+#include <chrono>
 #include "Server.h"
 #include "CookieClicker.h"
 
 class Client : public Gtk::Window {
 public:
     Client();
-
     virtual ~Client();
 
 protected:
@@ -25,10 +25,10 @@ protected:
     void ConnectToServer(const std::string &ipAddress, int port); // Connect to the server
 
     // Button Functionality
-    void onConnectButtonClicked();
-    void onBackButtonClicked();
-    void receiveGameState();
-    void sendGameStateToServer();
+    void onConnectButtonClicked(); // Call ConnectToServer Method
+    void onBackButtonClicked(); // Back to StartPage
+    void receiveGameState(); // Receive Binary Serialization from the Server
+    void sendGameDataToServer();
 
     // Layout of the Gtk::Client Window
     Gtk::Grid m_grid;
@@ -37,6 +37,8 @@ protected:
     Gtk::Entry txtIP, txtPort;
     Gtk::Label lblStatus;
     Gtk::Button btnConnect, btnBack;
+
+
 };
 
 

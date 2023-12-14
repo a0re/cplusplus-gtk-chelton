@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <thread>
 #include "CookieClicker.h"
-#include "StartView.h"
 
 class Server : public Gtk::Window {
 public:
@@ -27,7 +26,6 @@ protected:
     void listeningForClientConnection(); // Listen to incoming Client, This is done in a separate thread
     void sendGameState(); // Sending Binary Serialization to the Client
     void onBackButtonClicked(); // Back button to StartView Window
-
     void updateGameState(const GameData& gameData);
 
     // Layout of the Gtk::Server Window
@@ -36,6 +34,7 @@ protected:
     Gtk::Label lblClient;
     Gtk::Button btnBack;
 
+    void receiveGameState();
 };
 
 // Todo: updateGameState from Client

@@ -2,9 +2,11 @@
 #include "CookieClicker.h"
 
 Client::Client() : clientSocket(-1), serverSocket(-1) {
+    // Setting basic Titles and Dimension of Client Window
     set_title("Cookie Clicker: Client");
     set_default_size(550, 450);
 
+    //
     lblIP.set_text("Server IP:");
     lblPort.set_text("Port:");
     lblStatus.set_text("Status: Not Connected");
@@ -16,7 +18,7 @@ Client::Client() : clientSocket(-1), serverSocket(-1) {
     m_grid.set_margin(20);
     set_child(m_grid);
 
-    // Attaching the widgets to the grid container
+    // Attaching the widgets to the grid
     m_grid.attach(lblIP, 0, 0, 1, 1);
     m_grid.attach(txtIP, 1, 0, 1, 1);
     m_grid.attach(lblPort, 0, 1, 1, 1);
@@ -29,13 +31,6 @@ Client::Client() : clientSocket(-1), serverSocket(-1) {
     btnConnect.signal_clicked().connect(sigc::mem_fun(*this, &Client::onConnectButtonClicked));
     btnBack.signal_clicked().connect(sigc::mem_fun(*this, &Client::onBackButtonClicked));
 
-    // Receive and update the game state in a loop
-    std::thread clientThread(&Client::receiveGameState, this);
-    clientThread.detach();
-
-    // Send the game state to the server in a loop
-    std::thread sendThread(&Client::sendGameStateToServer, this);
-    sendThread.detach();
 }
 
 Client::~Client() {
@@ -77,11 +72,13 @@ void Client::ConnectToServer(const std::string& ipAddress, int port) {
         lblStatus.set_text("Status: Connection Failed");
         return;
     }
-
     // Connection successful
     lblStatus.set_text("Status: Connected to Server");
     pingServer();
+    receiveGameState();
 
+    std::thread sendDataThread(&Client::sendGameDataToServer, this);
+    sendDataThread.detach();
     // Create and show the CookieClicker Window
     cookieClicker.show();
 }
@@ -97,23 +94,9 @@ void Client::receiveGameState() {
     }
 }
 
-void Client::sendGameStateToServer() {
-    while (true) {
-        GameData gameData = cookieClicker.serializeGameData();
-        int bytesSent = send(serverSocket, &gameData, sizeof(GameData), 0);
 
-        if (bytesSent != sizeof(GameData)) {
-            // Handle the case where not all data was sent
-            std::cerr << "Not all data sent to the server." << std::endl;
-            // You might want to take appropriate action, such as trying to send again.
-        }
-
-        // Adjust the frequency based on your requirements
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-}
-
-// Simple Test Function to Ping Between Client and Server
+// Method: pingServer
+// Purpose: Send a PING_RESPONSE message to the Server socket & Sends only a simple string message
 void Client::pingServer() {
     const char* pingMessage = "PING";
     send(clientSocket, pingMessage, strlen(pingMessage), 0);
@@ -121,8 +104,22 @@ void Client::pingServer() {
 
 }
 
-
 void Client::onBackButtonClicked() {
     //TODO: Implement this method properly to go back to the StartView and call the destructor of the Client Window & socket
     std::cout << "Back Button Clicked" << std::endl;
 }
+
+// Todo: sendGameStateToServer() is a method that runs in a loop to send the game state to the server
+void Client::sendGameDataToServer() {
+    while (true) {
+        // Serialize game data
+        GameData gameData = cookieClicker.serializeGameData();
+
+        // Send serialized game data to the server
+        send(clientSocket, &gameData, sizeof(GameData), 0);
+
+        // Sleep for a certain interval (e.g., 1 second)
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+}
+
