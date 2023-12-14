@@ -28,7 +28,6 @@ protected:
     void onConnectButtonClicked(); // Call ConnectToServer Method
     void onBackButtonClicked(); // Back to StartPage
     void receiveGameState(); // Receive Binary Serialization from the Server
-    void sendGameDataToServer();
 
     // Layout of the Gtk::Client Window
     Gtk::Grid m_grid;

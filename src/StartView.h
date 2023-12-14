@@ -1,9 +1,8 @@
 #pragma once
-#include <gtkmm.h>
-#include "Server.h"
-#include "Client.h"
 
-/*#include <gtkmm/application.h> || I don't need this at the moment*/
+#include <gtkmm.h>
+#include "Client.h"
+#include "Server.h"
 
 class StartView : public Gtk::Window {
 public:
@@ -11,12 +10,16 @@ public:
     virtual ~StartView();
 
 protected:
+    // Layout of the Gtk::Window
     Gtk::Grid m_grid;
-
     Gtk::Label lblTitle;
     Gtk::Button btnServer, btnClient;
 
+    // Methods for buttons
     void onServerButtonClicked();
     void onClientButtonClicked();
 
+
+    Server* server;
+    Client* client;
 };

@@ -125,7 +125,6 @@ void Server::listeningForClientConnection() {
         lblClient.set_text("Client: " + std::string(clientIp) + ":" + std::to_string(ntohs(clientAddress.sin_port)));
 
         pingClient(clientSocket);
-        receiveGameState();
         sendGameState();
 
     }
@@ -162,15 +161,3 @@ void Server::sendGameState() {
     send(clientSocket, &gameData, sizeof(GameData), 0);
 }
 
-
-void Server::updateGameState(const GameData& gameData) {
-    // Deserialize game data and update the server's game state
-    cookieClicker.deserializeGameData(gameData);
-}
-
-// Method to receive and handle game state from the client
-void Server::receiveGameState() {
-    GameData receivedGameData{};
-    recv(clientSocket, &receivedGameData, sizeof(GameData), 0);
-    updateGameState(receivedGameData);
-}
