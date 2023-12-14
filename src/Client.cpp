@@ -61,7 +61,7 @@ void Client::ConnectToServer(const std::string& ipAddress, int port) {
     }
 
     struct sockaddr_in serverAddress{};
-    std::memset(&serverAddress, 0, sizeof(serverAddress));
+    memset(&serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET; // Set the address family to IPv4
     serverAddress.sin_addr.s_addr = inet_addr(ipAddress.c_str()); // Set the server IP address
     serverAddress.sin_port = htons(port); // Set the server port
