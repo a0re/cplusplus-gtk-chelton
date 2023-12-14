@@ -56,7 +56,7 @@ void Client::onConnectButtonClicked() {
 /////////////////////////////////////////////////////////////////////////////
 // Overview:
 // Create a socket for the client, initializes the server address structure similar to the Server.cpp.
-// If Connecttion to the server is successful, Updates the UI status label accordingly, Additionally
+// If Connection to the server is successful, Updates the UI status label accordingly, Additionally
 // A new thread is created to receive the game state from the server through the receiveGameState() method.
 /////////////////////////////////////////////////////////////////////////////
 void Client::ConnectToServer(const std::string& ipAddress, int port) {
@@ -85,7 +85,6 @@ void Client::ConnectToServer(const std::string& ipAddress, int port) {
     }
     // Connection successful: Update the UI status label to indicate a successful connection.
     lblStatus.set_text("Status: Connected to Server");
-    //std::cout << "Connected to " <<  << std::endl;
 
     // Create a new thread to receive the game state from the server
     std::thread clientThread(&Client::receiveGameState, this);
@@ -120,7 +119,7 @@ void Client::onBackButtonClicked() {
 }
 
 // Todo: sendGameStateToServer() is a method that runs in a loop to send the game state to the server
-void Client::sendGameDataToServer() {
+/*void Client::sendGameDataToServer() {
     while (true) {
         // Serialize game data
         GameData gameData = cookieClicker.serializeGameData();
@@ -131,5 +130,5 @@ void Client::sendGameDataToServer() {
         // Sleep for a certain interval (e.g., 1 second)
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-}
+}*/
 

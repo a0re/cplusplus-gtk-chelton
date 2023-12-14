@@ -1,8 +1,5 @@
 #include <iostream>
 #include "StartView.h"
-#include "Server.h"
-#include "Client.h"
-
 
 StartView::StartView()
     : lblTitle("Cookie Clicker Game"),
@@ -24,31 +21,14 @@ StartView::StartView()
 }
 
 StartView::~StartView() {
-
 }
+
+
 
 void StartView::onServerButtonClicked() {
     std::cout << "Server Button Clicked" << std::endl;
-
-    // Create an instance of the Server class
-    // Server server;
-
-    // Hide the StartView
-    // hide();
-
-    // Make the server view/window visible
-    // server.set_visible(true);
 }
-
-
 
 void StartView::onClientButtonClicked() {
-    std::cout << "Server Button Clicked" << std::endl;
-
-    // Create an instance of the Server class
-    // Client client;
-
-    // Make the server view/window visible
-    // client.set_visible(true);
+    std::cout << "Client Button Clicked" << std::endl;
 }
-

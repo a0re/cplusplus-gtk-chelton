@@ -6,6 +6,7 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <thread>
+#include <iostream>
 #include "CookieClicker.h"
 
 class Server : public Gtk::Window {

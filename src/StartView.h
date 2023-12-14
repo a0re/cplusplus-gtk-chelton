@@ -1,5 +1,4 @@
 #pragma once
-
 #include <gtkmm.h>
 #include "Client.h"
 #include "Server.h"
@@ -18,8 +17,4 @@ protected:
     // Methods for buttons
     void onServerButtonClicked();
     void onClientButtonClicked();
-
-
-    Server* server;
-    Client* client;
 };
