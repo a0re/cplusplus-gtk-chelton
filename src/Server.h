@@ -8,7 +8,6 @@
 #include <thread>
 
 
-
 class Server : public Gtk::Window {
 public:
     Server();   // Constructor for the Server class
@@ -19,21 +18,18 @@ protected:
     int clientSocket;
     std::string ipAddress;
 
-    void runServer();
+
     void startServer();
+    void runServer();
     void onBackButtonClicked();
     void PingClient(int clientSocket);
     void listeningForClientConnection();
 
 
-
-
-    /* Layout of Window */
+    // Layout of the Gtk::Server Window
     Gtk::Grid m_grid;
     Gtk::Label lblConnection, lblIP, lblPort;
     Gtk::Label lblClient;
-
-
     Gtk::Button btnBack;
 
     // Refer to the screenshots between Max & Dan
@@ -41,10 +37,6 @@ protected:
     //void LoadGame(); // Load the game? I need to have the window shown in the Server window underneath the IP Address and Port labels
 
     //void sendGameDataToClient();
-
-
-
-
 
 };
 

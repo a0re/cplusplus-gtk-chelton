@@ -12,7 +12,7 @@ public:
     // Game Window Rendering
     CookieClicker();
 
-    // [ TODO: Socket Connect Window ]
+    // [ TODO: Socket Connect Window? This comment doesn't make sense ]
 protected:
     //Variables:
     // Stores Count Values

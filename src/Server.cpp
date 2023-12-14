@@ -23,7 +23,6 @@ Server::Server() : serverSocket(-1){
     btnBack.signal_clicked().connect(sigc::mem_fun(*this, &Server::onBackButtonClicked));
 
 
-
     // Start the Server & Listen for Connections from Clients
     // This is being run on separate thread since the server will be running in an infinite loop
     // This is done so no issues occur with the Rendering the Gtkmm::Window
@@ -108,14 +107,6 @@ void Server::listeningForClientConnection() {
     }
 }
 
-// Destructor for the Server class
-Server::~Server() {
-    // Close the server socket if it's open
-    if (serverSocket != -1) {
-        ::close(serverSocket);
-    }
-}
-
 void Server::PingClient(int clientSocket) {
     const char* pingResponse = "PING_RESPONSE"; // Response to send to the client
     send(clientSocket, pingResponse, strlen(pingResponse), 0); // Send the response to the client
@@ -127,6 +118,17 @@ void Server::onBackButtonClicked() {
     //TODO: Implement this method properly to go back to the StartView
     std::cout << "Back Button Clicked" << std::endl;
 }
+
+// Destructor for the Server class
+Server::~Server() {
+    // Close the server socket if it's open
+    if (serverSocket != -1) {
+        ::close(serverSocket);
+    }
+}
+
+/*void Server::LoadGame() {
+}*/
 
 
 

@@ -15,3 +15,4 @@ int main(int argc, char *argv[])
 // TODO: Max: Format the GAME, Add Error Handling, Functions moved to files, Clean Up your Code you messy fuck!
 
 // If Time Allows Possibly add Live CPS
+// James: Self Reminder - Testing can only be done the same ethernet connection or hotspot same network Wifi didn't work for some reason

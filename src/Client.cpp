@@ -7,23 +7,26 @@ Client::Client() : clientSocket(-1), serverSocket(-1) {
     lblIP.set_text("Server IP:");
     lblPort.set_text("Port:");
     lblStatus.set_text("Status: Not Connected");
+    txtPort.set_text(std::to_string(port));
+
     btnConnect.set_label("Connect");
     btnBack.set_label("Back");
 
     m_grid.set_margin(20);
     set_child(m_grid);
 
+    // Attaching the widgets to the grid container
     m_grid.attach(lblIP, 0, 0, 1, 1);
     m_grid.attach(txtIP, 1, 0, 1, 1);
     m_grid.attach(lblPort, 0, 1, 1, 1);
     m_grid.attach(txtPort, 1, 1, 1, 1);
     m_grid.attach(lblStatus, 0, 2, 2, 1);
-    m_grid.attach(btnConnect, 0, 3, 1, 1);
-    m_grid.attach(btnBack, 1, 3, 1, 1);
+    m_grid.attach(btnConnect, 1, 3, 1, 1);
+    m_grid.attach(btnBack, 0, 3, 1, 1);
 
     // Connect signal handlers
     btnConnect.signal_clicked().connect(sigc::mem_fun(*this, &Client::onConnectButtonClicked));
-    //btnBack.signal_clicked().connect(sigc::mem_fun(*this, &Client::onBackButtonClicked));
+    btnBack.signal_clicked().connect(sigc::mem_fun(*this, &Client::onBackButtonClicked));
 }
 
 Client::~Client() {
@@ -65,25 +68,24 @@ void Client::ConnectToServer(const std::string& ipAddress, int port) {
         lblStatus.set_text("Status: Connection Failed");
         return;
     }
-
     // Connection successful
     lblStatus.set_text("Status: Connected to Server");
 
-    // Ping the server
-    PingServer();
+
 }
 
+
+// Simple Test Function to Ping Between Client and Server
 void Client::PingServer() {
     const char* pingMessage = "PING";
     send(clientSocket, pingMessage, strlen(pingMessage), 0);
+    std:: cout << "Hello From Client: Ping Sent" << std::endl;
 
-    // You can implement logic to wait for a response from the server if needed
-    // For simplicity, the client assumes a response from the server after sending the "PING" message.
 }
 
-/*
+
 void Client::onBackButtonClicked() {
     //TODO: Implement this method properly to go back to the StartView
     std::cout << "Back Button Clicked" << std::endl;
 }
-*/
+
