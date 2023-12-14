@@ -75,11 +75,14 @@ void Client::ConnectToServer(const std::string& ipAddress, int port) {
     // Connection successful
     lblStatus.set_text("Status: Connected to Server");
     pingServer();
-    receiveGameState();
 
-    //std::thread sendDataThread(&Client::sendGameDataToServer, this);
-    //sendDataThread.detach();
-    // Create and show the CookieClicker Window
+
+    std::thread clientThread(&Client::receiveGameState, this);
+    clientThread.detach();
+
+    std::thread clientThread2(&Client::sendGameDataToServer, this);
+    clientThread.detach();
+
     cookieClicker.show();
 }
 
@@ -107,5 +110,19 @@ void Client::pingServer() {
 void Client::onBackButtonClicked() {
     //TODO: Implement this method properly to go back to the StartView and call the destructor of the Client Window & socket
     std::cout << "Back Button Clicked" << std::endl;
+}
+
+// Todo: sendGameStateToServer() is a method that runs in a loop to send the game state to the server
+void Client::sendGameDataToServer() {
+    while (true) {
+        // Serialize game data
+        GameData gameData = cookieClicker.serializeGameData();
+
+        // Send serialized game data to the server
+        send(clientSocket, &gameData, sizeof(GameData), 0);
+
+        // Sleep for a certain interval (e.g., 1 second)
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 }
 

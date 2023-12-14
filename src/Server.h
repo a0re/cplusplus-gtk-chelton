@@ -34,6 +34,7 @@ protected:
     Gtk::Button btnBack;
 
 
+    void receiveAndUpdateGameState();
 };
 
 // Todo: updateGameState from Client

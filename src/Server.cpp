@@ -127,6 +127,8 @@ void Server::listeningForClientConnection() {
         pingClient(clientSocket);
         sendGameState();
 
+        std::thread serverThread(&Server::receiveAndUpdateGameState, this);
+        serverThread.detach();
     }
 }
 
@@ -161,3 +163,10 @@ void Server::sendGameState() {
     send(clientSocket, &gameData, sizeof(GameData), 0);
 }
 
+void Server::receiveAndUpdateGameState() {
+    GameData receivedGameData{};
+    recv(clientSocket, &receivedGameData, sizeof(GameData), 0);
+    cookieClicker.deserializeGameData(receivedGameData);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}

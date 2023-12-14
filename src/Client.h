@@ -38,6 +38,7 @@ protected:
     Gtk::Button btnConnect, btnBack;
 
 
+    void sendGameDataToServer();
 };
 
 
